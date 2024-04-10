@@ -1,13 +1,13 @@
-const test =  autoResize(width: number, height: number, newWidth: number, newHeight: number): { width: number, height: number } {
-    const aspectRatio = width / height;
-    let resizedWidth = newWidth;
-    let resizedHeight = newHeight;
+export const aspectRatio = (width: number, height?: number) => {
+  const initialWidth = 2550;
+  const initialHeight = 3300;
 
-    if (newWidth !== width) {
-        resizedHeight = newWidth / aspectRatio;
-    } else if (newHeight !== height) {
-        resizedWidth = newHeight * aspectRatio;
-    }
+  const asRatio = initialWidth / initialHeight;
 
-    return { width: resizedWidth, height: resizedHeight };
-}
+  const newHeight = width / asRatio;
+
+  return {
+    height: newHeight,
+    width: newHeight * asRatio,
+  };
+};

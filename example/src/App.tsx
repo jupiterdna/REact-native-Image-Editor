@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import ImageEditor from '@react-native-community/image-editor';
 import img from './assets/image.jpg';
+import { aspectRatio } from './assets/utils';
 
 export default function App() {
   const [uri, setUri] = React.useState('');
@@ -118,22 +119,43 @@ export default function App() {
 
     if (res) {
       Image.getSize(`file://${res}`, (width, height) => {
-        console.log('width, height', width, height);
-      });
+        const expHeight = Math.floor(aspectRatio(width).height);
+        const totalPages = Math.floor(height / expHeight);
 
-      ImageEditor.cropImage(`file://${res}`, {
-        offset: { x: 0, y: 0 },
-        size: { width: 200, height: 200 },
-        displaySize: { width: 200, height: 200 },
-        resizeMode: 'contain',
-      })
-        .then((url) => {
-          // console.log('Cropped image uri', url);
-          // In case of Web, the `url` is the base64 string
-        })
-        .catch((error) => {
-          console.log('errrrr', error);
-        });
+        if (totalPages) {
+          Array.from({ length: totalPages }, (_, index) => {
+            ImageEditor.cropImage(`file://${res}`, {
+              offset: { x: 0, y: expHeight * (index + 1) },
+              size: { width: width, height: aspectRatio(width).height },
+              resizeMode: 'contain',
+            })
+              .then((url) => {
+                // console.log(`Cropped image uri index: ${index}`,  url);
+                // In case of Web, the `url` is the base64 string
+              })
+              .catch((error) => {
+                console.log('errrrr', error);
+              });
+          });
+
+          return (
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    margin: 20,
+                  },
+                ]}
+                disabled={isLoading}
+                onPress={() => setUri('')}
+              >
+                <Text style={styles.buttonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }
+      });
     }
 
     if (res) {
@@ -170,11 +192,62 @@ export default function App() {
             fileName: 'page1',
             format: 'jpg',
             quality: 1,
-            width: 2550,
             useRenderInContext: true,
           }}
           ref={ref}
         >
+          <View style={{ backgroundColor: 'red', height: 1000 }}>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+          </View>
+          <View style={{ backgroundColor: 'red', height: 1000 }}>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
+              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
+              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
+              veniam? Nemo.
+            </Text>
+          </View>
           <View style={{ backgroundColor: 'red', height: 1000 }}>
             <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
@@ -376,161 +449,7 @@ export default function App() {
               veniam? Nemo.
             </Text>
           </View>
-
-          <View style={{ backgroundColor: 'red', height: 1000 }}>
-            <Text>Page 5</Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-          </View>
-          <View style={{ backgroundColor: 'orange', height: 1000 }}>
-            <Text>Page 7</Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-          </View>
-          <View style={{ backgroundColor: 'blue', height: 1000 }}>
-            <Text>Page 22</Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-          </View>
-          <View style={{ backgroundColor: 'red', height: 1000 }}>
+          <View style={{ backgroundColor: 'coral', height: 1000 }}>
             <Text>Page 2</Text>
             <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
@@ -556,33 +475,6 @@ export default function App() {
               totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
               veniam? Nemo.
             </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-            <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
-              quis mollitia repellat nisi quisquam ducimus provident eos, nam,
-              totam ipsum culpa deleniti aliquam explicabo qui delectus omnis
-              veniam? Nemo.
-            </Text>
-          </View>
-          <View style={{ backgroundColor: 'yellow', height: 1000 }}>
-            <Text>Page 2</Text>
             <Text style={{ fontSize: 30, padding: 20, marginBottom: 20 }}>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero at
               quis mollitia repellat nisi quisquam ducimus provident eos, nam,
